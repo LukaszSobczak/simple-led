@@ -1,0 +1,8 @@
+SimpleLed	KEYWORD1
+
+reset		KEYWORD2
+turnOn		KEYWORD2
+turnOff		KEYWORD2
+toggle		KEYWORD2
+isTurnOn	KEYWORD2
+blink		KEYWORD2
