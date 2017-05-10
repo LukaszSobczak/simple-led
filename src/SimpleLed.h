@@ -11,21 +11,27 @@
 class SimpleLed
 {
 public:
-  SimpleLed(byte ledPin);
+  SimpleLed(const byte ledPin);
   void reset();
-  void turnOn();
-  void turnOff();
+  void on();
+  void off();
   void toggle();
-  bool isTurnOn();
-  void blink(int millis, int intervalMillis, int nTimes);
-  void blink(int millis, int timeOnMillis, int timeOffMillis, int nTimes);
+  bool isOn();
+  void update(int millis);
+  void blink(int intervalMillis, int iteration);
+  void blink(int timeOnMillis, int timeOffMillis, int iteration);
 
 private:
-  byte ledPin;
+  const byte ledPin;
   byte ledState;
   bool initBlink;
   int startMillis;
   int blinkedTimes;
+  int iteration;
+  int timeOn, timeOff;
+
+  bool isEndBlinking();
 };
 
 #endif // _SIMPLE_LED_H_
+

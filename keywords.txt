@@ -1,8 +1,9 @@
 SimpleLed	KEYWORD1
 
 reset		KEYWORD2
-turnOn		KEYWORD2
-turnOff		KEYWORD2
+on			KEYWORD2
+off			KEYWORD2
 toggle		KEYWORD2
-isTurnOn	KEYWORD2
+isOn		KEYWORD2
+update		KEYWORD2
 blink		KEYWORD2

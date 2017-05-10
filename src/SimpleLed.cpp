@@ -6,7 +6,7 @@
 */
 #include "SimpleLed.h"
 
-SimpleLed::SimpleLed(byte ledPin) : ledPin(ledPin)
+SimpleLed::SimpleLed(const byte ledPin) : ledPin(ledPin)
 {
   pinMode(ledPin, OUTPUT);
   reset();
@@ -17,16 +17,16 @@ void SimpleLed::reset()
   initBlink = true;
   startMillis = 0;
   blinkedTimes = 0;
-  turnOff();
+  off();
 }
 
-void SimpleLed::turnOn()
+void SimpleLed::on()
 {
   ledState = HIGH;
   digitalWrite(ledPin, ledState);
 }
 
-void SimpleLed::turnOff()
+void SimpleLed::off()
 {
   ledState = LOW;
   digitalWrite(ledPin, ledState);
@@ -34,25 +34,20 @@ void SimpleLed::turnOff()
 
 void SimpleLed::toggle()
 {
-  if(isTurnOn())
-    turnOff();
+  if(isOn())
+    off();
   else
-    turnOn();
+    on();
 }
 
-bool SimpleLed::isTurnOn()
+bool SimpleLed::isOn()
 {
   return ledState == HIGH;
 }
 
-void SimpleLed::blink(int millis, int intervalMillis, int nTimes)
+void SimpleLed::update(int millis)
 {
-  blink(millis, intervalMillis, intervalMillis, nTimes);
-}
-
-void SimpleLed::blink(int millis, int timeOnMillis, int timeOffMillis, int nTimes)
-{  
-  if(blinkedTimes >= 2*nTimes && nTimes >= 0)
+  if(isEndBlinking())
     return;
   
   if(initBlink)
@@ -60,12 +55,33 @@ void SimpleLed::blink(int millis, int timeOnMillis, int timeOffMillis, int nTime
     startMillis = millis;
     initBlink = false;
   }
-  
-  if(millis - startMillis >= (isTurnOn() ? timeOnMillis : timeOffMillis))
+
+  if(timeOn <= 0)
+    off();    
+  else if(millis - startMillis >= (isOn() ? timeOn : timeOff))
   {
     startMillis = millis;
     ++blinkedTimes;
     toggle();
   }
+}
+
+void SimpleLed::blink(int intervalMillis, int iteration)
+{
+  blink(intervalMillis, intervalMillis, iteration);
+}
+
+void SimpleLed::blink(int timeOnMillis, int timeOffMillis, int iteration)
+{
+  timeOn = timeOnMillis;
+  timeOff = timeOffMillis;
+  this->iteration = iteration;
+  reset();
+}
+
+bool SimpleLed::isEndBlinking()
+{
+  return (blinkedTimes >= 2*iteration && iteration >= 0) || 
+         (timeOn <= 0 && timeOff <= 0);
 }
 
